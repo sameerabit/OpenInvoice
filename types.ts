@@ -23,11 +23,17 @@ export interface ServiceOrProduct {
   type: 'service' | 'product';
 }
 
+export interface Vehicle {
+  id: string;
+  rego: string;
+  odo: string;
+  desc: string;
+}
+
 export interface Customer {
     id: string;
     name: string;
     address: string;
-    vehicleRego: string;
-    vehicleOdo: string;
-    vehicleDesc: string;
+  // allow multiple vehicles per customer
+  vehicles: Vehicle[];
 }

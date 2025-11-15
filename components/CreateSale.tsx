@@ -9,7 +9,15 @@ interface CreateSaleProps {
     onCreateInvoice: (data: Omit<InvoiceData, 'invoiceNumber' | 'date'>) => void;
 }
 
-const emptyCustomer: Omit<Customer, 'id'> = {
+type LocalCustomerDetails = {
+    name: string;
+    address: string;
+    vehicleRego: string;
+    vehicleOdo: string;
+    vehicleDesc: string;
+};
+
+const emptyCustomer: LocalCustomerDetails = {
     name: '',
     address: '',
     vehicleRego: '',
@@ -20,6 +28,7 @@ const emptyCustomer: Omit<Customer, 'id'> = {
 const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, onCreateInvoice }) => {
     const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
     const [customerDetails, setCustomerDetails] = useState(emptyCustomer);
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string>('');
     const [lineItems, setLineItems] = useState<LineItem[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -27,18 +36,31 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
         if (selectedCustomerId) {
             const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
             if (selectedCustomer) {
+                const firstVehicle = (selectedCustomer.vehicles && selectedCustomer.vehicles[0]) || null;
+                setSelectedVehicleId(firstVehicle ? firstVehicle.id : '');
                 setCustomerDetails({
                     name: selectedCustomer.name,
                     address: selectedCustomer.address,
-                    vehicleRego: selectedCustomer.vehicleRego,
-                    vehicleOdo: selectedCustomer.vehicleOdo,
-                    vehicleDesc: selectedCustomer.vehicleDesc,
+                    vehicleRego: firstVehicle ? firstVehicle.rego : '',
+                    vehicleOdo: firstVehicle ? firstVehicle.odo : '',
+                    vehicleDesc: firstVehicle ? firstVehicle.desc : '',
                 });
             }
         } else {
             setCustomerDetails(emptyCustomer);
+            setSelectedVehicleId('');
         }
     }, [selectedCustomerId, customers]);
+
+    useEffect(() => {
+        if (!selectedCustomerId) return;
+        const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
+        if (!selectedCustomer) return;
+        const vehicle = (selectedCustomer.vehicles || []).find(v => v.id === selectedVehicleId);
+        if (vehicle) {
+            setCustomerDetails(prev => ({ ...prev, vehicleRego: vehicle.rego, vehicleOdo: vehicle.odo, vehicleDesc: vehicle.desc }));
+        }
+    }, [selectedVehicleId, selectedCustomerId, customers]);
 
     const handleInputChange = (field: keyof typeof emptyCustomer, value: string) => {
         setCustomerDetails(prev => ({ ...prev, [field]: value }));
@@ -59,15 +81,28 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
     };
 
     const handleAddItemsFromList = (itemsToAdd: ServiceOrProduct[]) => {
-        const newItems: LineItem[] = itemsToAdd.map(item => ({
-            id: crypto.randomUUID(),
-            description: item.description,
-            quantity: 1,
-            price: item.price,
-        }));
+        const newItems: LineItem[] = itemsToAdd.map(item => {
+            // Special handling for Standard Maintenance Service
+            if (item.description === 'Standard Maintenance Service') {
+                const standardMaintenanceChecklist = `Standard Maintenance Service\n✓ Checked and topped up all fluids\n✓ Checked lights, indicators and their operation\n✓ Checked front and rear brake shoes/pads\n✓ Checked steering and suspension systems\n✓ Checked windscreen wipers and washers\n✓ Checked the air filter\n✓ Inspected the vehicle for safety issues\n✓ Checked all external engine belts and hoses\n✓ Checked tyres and pressures`;
+                return {
+                    id: crypto.randomUUID(),
+                    description: standardMaintenanceChecklist,
+                    quantity: 1,
+                    price: item.price,
+                    isStandardMaintenance: true,
+                } as any;
+            }
+            return {
+                id: crypto.randomUUID(),
+                description: item.description,
+                quantity: 1,
+                price: item.price,
+            };
+        });
         setLineItems(prev => [...prev, ...newItems]);
     };
-      
+
     const handleRemoveItem = (id: string) => {
         setLineItems(prev => prev.filter(item => item.id !== id));
     };
@@ -117,11 +152,25 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                         <option value="">-- New Customer --</option>
                         {customers.map(customer => (
                             <option key={customer.id} value={customer.id}>
-                                {customer.name} - {customer.vehicleRego}
+                                {customer.name} - {(customer.vehicles || [])[0]?.rego || 'no vehicle'}
                             </option>
                         ))}
                     </select>
                 </div>
+                {selectedCustomerId && (
+                    <div className="mb-6">
+                        <label htmlFor="vehicle-select" className="block text-sm font-medium text-gray-700 mb-1">Select Vehicle</label>
+                        <select id="vehicle-select" value={selectedVehicleId} onChange={e => setSelectedVehicleId(e.target.value)} className="form-input">
+                            <option value="">-- Enter vehicle manually --</option>
+                            {(() => {
+                                const cust = customers.find(c => c.id === selectedCustomerId);
+                                return (cust?.vehicles || []).map(v => (
+                                    <option key={v.id} value={v.id}>{v.rego} — {v.desc}</option>
+                                ));
+                            })()}
+                        </select>
+                    </div>
+                )}
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <h2 className="text-xl font-semibold text-gray-700 border-t pt-6">Customer & Vehicle Details</h2>
