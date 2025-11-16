@@ -81,26 +81,39 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
     };
 
     const handleAddItemsFromList = (itemsToAdd: ServiceOrProduct[]) => {
-        const newItems: LineItem[] = itemsToAdd.map(item => {
-            // Special handling for Standard Maintenance Service
+        // We'll build a list of line items to append. If a service has included products
+        // we append those products as line items with `included: true` so the UI can hide price/qty.
+        const additions: LineItem[] = [];
+
+        itemsToAdd.forEach(item => {
+        // Special handling for Standard Maintenance Service checklist
             if (item.description === 'Standard Maintenance Service') {
                 const standardMaintenanceChecklist = `Standard Maintenance Service\n✓ Checked and topped up all fluids\n✓ Checked lights, indicators and their operation\n✓ Checked front and rear brake shoes/pads\n✓ Checked steering and suspension systems\n✓ Checked windscreen wipers and washers\n✓ Checked the air filter\n✓ Inspected the vehicle for safety issues\n✓ Checked all external engine belts and hoses\n✓ Checked tyres and pressures`;
-                return {
-                    id: crypto.randomUUID(),
-                    description: standardMaintenanceChecklist,
-                    quantity: 1,
-                    price: item.price,
-                    isStandardMaintenance: true,
-                } as any;
+                additions.push({ id: crypto.randomUUID(), description: standardMaintenanceChecklist, isStandardMaintenance: true } as any);
+                return;
             }
-            return {
-                id: crypto.randomUUID(),
-                description: item.description,
-                quantity: 1,
-                price: item.price,
-            };
+
+            // Add the selected item itself (service or product)
+            additions.push({ id: crypto.randomUUID(), description: item.description, quantity: 1, price: item.price } as LineItem);
+
+            // If it's a service that includes product ids, append those products as included lines
+            if (item.type === 'service' && (item as any).includedProductIds && Array.isArray((item as any).includedProductIds)) {
+                const includedIds: string[] = (item as any).includedProductIds;
+                includedIds.forEach(pid => {
+                    const prod = products.find(p => p.id === pid);
+                    if (prod) {
+                        additions.push({
+                            id: crypto.randomUUID(),
+                            description: prod.description,
+                            included: true,
+                            includedBy: item.id,
+                        } as any);
+                    }
+                });
+            }
         });
-        setLineItems(prev => [...prev, ...newItems]);
+
+        setLineItems(prev => [...prev, ...additions]);
     };
 
     const handleRemoveItem = (id: string) => {
@@ -210,44 +223,61 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                                 </tr>
                             </thead>
                             <tbody>
-                                {lineItems.map((item) => (
-                                <tr key={item.id} className="text-sm">
-                                    <td className="border p-2 align-top">
-                                    <textarea
-                                        value={item.description}
-                                        onChange={(e) => handleDescriptionChange(item.id, e.target.value, e.currentTarget)}
-                                        className="w-full p-0 m-0 bg-transparent border-none focus:ring-0 resize-none"
-                                        rows={item.description.split('\n').length || 1}
-                                    />
-                                    </td>
-                                    <td className="border p-2 align-top">
-                                    <input
-                                        type="number"
-                                        value={item.quantity}
-                                        onChange={(e) => handleItemChange(item.id, 'quantity', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                        className="w-full p-0 m-0 text-center bg-transparent border-none focus:ring-0"
-                                        aria-label="Quantity"
-                                    />
-                                    </td>
-                                    <td className="border p-2 align-top">
-                                    <input
-                                        type="number"
-                                        value={item.price}
-                                        onChange={(e) => handleItemChange(item.id, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                        className="w-full p-0 m-0 text-center bg-transparent border-none focus:ring-0"
-                                        aria-label="Price"
-                                    />
-                                    </td>
-                                    <td className="border p-2 text-center align-top">
-                                    {(Number(item.quantity) * Number(item.price) || 0).toFixed(2)}
-                                    </td>
-                                    <td className="p-1 text-center align-middle">
-                                    <button type="button" onClick={() => handleRemoveItem(item.id)} className="text-red-500 hover:text-red-700 opacity-50 hover:opacity-100 transition-opacity" aria-label="Remove item">
-                                        &#x2715;
-                                    </button>
-                                    </td>
-                                </tr>
-                                ))}
+                                {lineItems.map((item: any) => {
+                                    const isSpecial = Boolean(item.isStandardMaintenance || item.included);
+                                    return (
+                                        <tr key={item.id} className="text-sm">
+                                            <td className="border p-2 align-top">
+                                                <textarea
+                                                    value={item.description}
+                                                    onChange={(e) => handleDescriptionChange(item.id, e.target.value, e.currentTarget)}
+                                                    className="w-full p-0 m-0 bg-transparent border-none focus:ring-0 resize-none"
+                                                    rows={item.description.split('\n').length || 1}
+                                                    readOnly={Boolean(item.isStandardMaintenance)}
+                                                />
+                                            </td>
+
+                                            {!isSpecial ? (
+                                                <>
+                                                    <td className="border p-2 align-top">
+                                                        <input
+                                                            type="number"
+                                                            value={item.quantity}
+                                                            onChange={(e) => handleItemChange(item.id, 'quantity', e.target.value === '' ? '' : parseFloat(e.target.value))}
+                                                            className="w-full p-0 m-0 text-center bg-transparent border-none focus:ring-0"
+                                                            aria-label="Quantity"
+                                                        />
+                                                    </td>
+                                                    <td className="border p-2 align-top">
+                                                        <input
+                                                            type="number"
+                                                            value={item.price}
+                                                            onChange={(e) => handleItemChange(item.id, 'price', e.target.value === '' ? '' : parseFloat(e.target.value))}
+                                                            className="w-full p-0 m-0 text-center bg-transparent border-none focus:ring-0"
+                                                            aria-label="Price"
+                                                        />
+                                                    </td>
+                                                    <td className="border p-2 text-center align-top">
+                                                        {(Number(item.quantity) * Number(item.price) || 0).toFixed(2)}
+                                                    </td>
+                                                </>
+                                            ) : (
+                                                // empty cells when the item is included or a checklist
+                                                <>
+                                                    <td className="border p-2 align-top">&nbsp;</td>
+                                                    <td className="border p-2 align-top">&nbsp;</td>
+                                                    <td className="border p-2 text-center align-top">&nbsp;</td>
+                                                </>
+                                            )}
+
+                                            <td className="p-1 text-center align-middle">
+                                                <button type="button" onClick={() => handleRemoveItem(item.id)} className="text-red-500 hover:text-red-700 opacity-50 hover:opacity-100 transition-opacity" aria-label="Remove item">
+                                                    &#x2715;
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                         <div className="flex flex-wrap items-center mt-4 space-x-0 sm:space-x-4 space-y-2 sm:space-y-0">

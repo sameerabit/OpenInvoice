@@ -1,8 +1,15 @@
 export interface LineItem {
   id: string;
   description: string;
-  quantity: number | string;
-  price: number | string;
+  // quantity and price are optional for special items (checklists / included products)
+  quantity?: number | string;
+  price?: number | string;
+  // Marks a line that is included as part of a service (cost included in service)
+  included?: boolean;
+  // id of the service that included this product
+  includedBy?: string;
+  // flag for the special Standard Maintenance checklist
+  isStandardMaintenance?: boolean;
 }
 
 export interface InvoiceData {
@@ -21,6 +28,8 @@ export interface ServiceOrProduct {
   description: string;
   price: number;
   type: 'service' | 'product';
+  // optional list of product ids that are included with this service
+  includedProductIds?: string[];
 }
 
 export interface Vehicle {

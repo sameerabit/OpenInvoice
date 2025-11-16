@@ -8,7 +8,8 @@ import ManageProducts from './components/ManageProducts';
 import CreateSale from './components/CreateSale';
 
 const sampleServices: ServiceOrProduct[] = [
-  { id: 's1', description: 'Standard Maintenance Service', price: 140.00, type: 'service' },
+  // Standard maintenance includes basic consumables (engine oil + oil filter)
+  { id: 's1', description: 'Standard Maintenance Service', price: 140.00, type: 'service', includedProductIds: ['p1', 'p2'] },
   { id: 's2', description: 'Brake Fluid Flush', price: 85.00, type: 'service' },
   { id: 's3', description: 'Tire Rotation & Balance', price: 50.00, type: 'service' },
   { id: 's4', description: 'Labour (per hour)', price: 60.00, type: 'service' },
@@ -24,8 +25,8 @@ const sampleProducts: ServiceOrProduct[] = [
 ];
 
 const sampleCustomers: Customer[] = [
-    { id: 'c1', name: 'Car2u', address: '34 Boondar Street,\nChigwell\nTAS 7011', vehicleRego: 'XYZ-123', vehicleOdo: '150,000 km', vehicleDesc: '2018 Toyota Hiace' },
-    { id: 'c2', name: 'John Smith', address: '123 Main Street,\nAnytown\nUSA 12345', vehicleRego: 'ABC-789', vehicleOdo: '87,654 km', vehicleDesc: '2020 Honda Civic' },
+  { id: 'c1', name: 'Car2u', address: '34 Boondar Street,\nChigwell\nTAS 7011', vehicles: [{ id: 'v1', rego: 'XYZ-123', odo: '150,000 km', desc: '2018 Toyota Hiace' }] },
+  { id: 'c2', name: 'John Smith', address: '123 Main Street,\nAnytown\nUSA 12345', vehicles: [{ id: 'v2', rego: 'ABC-789', odo: '87,654 km', desc: '2020 Honda Civic' }] },
 ];
 
 export type Page = 'new-sale' | 'invoice' | 'customers' | 'services' | 'products';
@@ -71,7 +72,7 @@ const App: React.FC = () => {
       case 'customers':
         return <ManageCustomers customers={customers} setCustomers={setCustomers} />;
       case 'services':
-        return <ManageServices items={services} setItems={setServices} />;
+        return <ManageServices items={services} setItems={setServices} products={products} />;
       case 'products':
         return <ManageProducts items={products} setItems={setProducts} />;
       default:

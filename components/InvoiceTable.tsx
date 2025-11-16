@@ -19,6 +19,17 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
     }
   };
 
+  // Helper to get parent service description
+  const getParentServiceDescription = (item: LineItem) => {
+    if ((item as any).includedBy) {
+      const parentService = items.find(i => i.id === (item as any).includedBy);
+      if (parentService) {
+        return parentService.description.split('\n')[0]; // Get first line
+      }
+    }
+    return null;
+  };
+
   const grandTotal = items.reduce((total, item) => {
     const quantity = Number(item.quantity) || 0;
     const price = Number(item.price) || 0;
@@ -40,29 +51,41 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
         </thead>
         <tbody>
           {items.map((item, index) => {
+            const isSpecial = Boolean((item as any).included || (item as any).isStandardMaintenance);
+            const isIncluded = Boolean((item as any).included);
             const quantity = Number(item.quantity) || 0;
             const price = Number(item.price) || 0;
             const subtotal = quantity * price;
 
             return (
-              <tr key={item.id} className="text-sm">
+              <tr key={item.id} className={`text-sm ${isIncluded ? 'bg-blue-50' : ''}`}>
                 <td className="border border-gray-400 p-2 text-center align-top">
-                  {index + 1}
+                  {!isIncluded ? index + 1 : ''}
                 </td>
                 <td className="border border-gray-400 p-2 align-top">
-                  {onItemChange ? (
-                    <textarea
-                      value={item.description}
-                      onChange={(e) => handleDescriptionChange(item.id, e.target.value, e.currentTarget)}
-                      className="w-full p-0 m-0 bg-transparent border-none focus:ring-0 resize-none"
-                      rows={item.description.split('\n').length || 1}
-                    />
-                  ) : (
-                    <div className="whitespace-pre-wrap">{item.description}</div>
-                  )}
+                  <div className={isIncluded ? 'ml-6 pl-3 border-l-4 border-blue-400' : ''}>
+                    {isIncluded && (
+                      <div className="mb-1">
+                        <span className="text-xs text-blue-600 font-semibold block">↳ Included in:</span>
+                        <span className="text-xs text-blue-500 italic">{getParentServiceDescription(item)}</span>
+                      </div>
+                    )}
+                    {onItemChange ? (
+                      <textarea
+                        value={item.description}
+                        onChange={(e) => handleDescriptionChange(item.id, e.target.value, e.currentTarget)}
+                        className="w-full p-0 m-0 bg-transparent border-none focus:ring-0 resize-none"
+                        rows={item.description.split('\n').length || 1}
+                      />
+                    ) : (
+                      <div className="whitespace-pre-wrap">{item.description}</div>
+                    )}
+                  </div>
                 </td>
                 <td className="border border-gray-400 p-2 align-top text-center">
-                   {onItemChange ? (
+                  {isSpecial ? (
+                    <span>&nbsp;</span>
+                  ) : onItemChange ? (
                     <input
                       type="number"
                       value={item.quantity}
@@ -75,7 +98,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
                   )}
                 </td>
                 <td className="border border-gray-400 p-2 align-top text-center">
-                  {onItemChange ? (
+                  {isSpecial ? (
+                    <span>&nbsp;</span>
+                  ) : onItemChange ? (
                     <input
                       type="number"
                       value={item.price}
@@ -88,7 +113,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
                   )}
                 </td>
                 <td className="border border-gray-400 p-2 text-center align-top">
-                  {subtotal > 0 ? subtotal.toFixed(2) : ''}
+                  {!isSpecial && subtotal > 0 ? subtotal.toFixed(2) : ''}
                 </td>
                 {onRemoveItem && (
                   <td className="border-r border-gray-400 p-1 text-center align-middle no-print">
