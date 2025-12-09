@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import type { Customer, Vehicle } from '../types';
 import { createCustomer, updateCustomer, deleteCustomer, addVehicle, updateVehicle, deleteVehicle, CustomerPayload } from '../api';
+import { Card } from './ui/Card';
+import { Input } from './ui/Input';
+import { Button } from './ui/Button';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 
 interface ManageCustomersProps {
     customers: Customer[];
@@ -9,8 +13,8 @@ interface ManageCustomersProps {
 }
 
 const ManageCustomers: React.FC<ManageCustomersProps> = ({ customers, onRefresh, onEditCustomer }) => {
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
     const [rego, setRego] = useState('');
     const [odo, setOdo] = useState('');
     const [desc, setDesc] = useState('');
@@ -22,48 +26,48 @@ const ManageCustomers: React.FC<ManageCustomersProps> = ({ customers, onRefresh,
     const [addDesc, setAddDesc] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name) {
-        const payload: CustomerPayload = {
-            name,
-            address,
-            vehicles: []
-        };
+        e.preventDefault();
+        if (name) {
+            const payload: CustomerPayload = {
+                name,
+                address,
+                vehicles: []
+            };
 
-        if (rego || odo || desc) {
-            payload.vehicles?.push({
-                rego,
-                odo,
-                desc
-            });
-        }
+            if (rego || odo || desc) {
+                payload.vehicles?.push({
+                    rego,
+                    odo,
+                    desc
+                });
+            }
 
-        try {
-            await createCustomer(payload);
-            onRefresh();
-            setName('');
-            setAddress('');
-            setRego('');
-            setOdo('');
-            setDesc('');
-        } catch (error) {
-            console.error('Failed to create customer:', error);
-            alert('Failed to create customer');
+            try {
+                await createCustomer(payload);
+                onRefresh();
+                setName('');
+                setAddress('');
+                setRego('');
+                setOdo('');
+                setDesc('');
+            } catch (error) {
+                console.error('Failed to create customer:', error);
+                alert('Failed to create customer');
+            }
         }
-    }
-  };
+    };
 
     const handleRemove = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
-        try {
-            await deleteCustomer(id);
-            onRefresh();
-        } catch (error) {
-            console.error('Failed to delete customer:', error);
-            alert('Failed to delete customer');
+        if (window.confirm('Are you sure you want to delete this customer?')) {
+            try {
+                await deleteCustomer(id);
+                onRefresh();
+            } catch (error) {
+                console.error('Failed to delete customer:', error);
+                alert('Failed to delete customer');
+            }
         }
-    }
-  };
+    };
 
     const handleAddVehicle = async () => {
         if (!addVehicleCustomerId) return alert('Select a customer to add vehicle to');
@@ -161,179 +165,179 @@ const ManageCustomers: React.FC<ManageCustomersProps> = ({ customers, onRefresh,
         }
     };
 
-  return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-4">Manage Customers</h1>
-
-      <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-        <h2 className="text-xl font-bold mb-4 text-gray-700">Add New Customer</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
-                <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g., John Smith" className="form-input" required />
-            </div>
-            <div>
-                <label htmlFor="rego" className="block text-sm font-medium text-gray-700 mb-1">Vehicle Rego (Number Plate)</label>
-                <input id="rego" type="text" value={rego} onChange={e => setRego(e.target.value)} placeholder="e.g., ABC-123" className="form-input" />
-            </div>
-            <div className="md:col-span-2">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <textarea id="address" value={address} onChange={e => setAddress(e.target.value)} placeholder="123 Main Street..." rows={3} className="form-input" />
-            </div>
-            <div>
-                <label htmlFor="odo" className="block text-sm font-medium text-gray-700 mb-1">Vehicle Odometer (km)</label>
-                <input id="odo" type="text" value={odo} onChange={e => setOdo(e.target.value)} placeholder="e.g., 150,000 km" className="form-input" />
-            </div>
-            <div>
-                <label htmlFor="desc" className="block text-sm font-medium text-gray-700 mb-1">Vehicle Description</label>
-                <input id="desc" type="text" value={desc} onChange={e => setDesc(e.target.value)} placeholder="e.g., 2020 Honda Civic" className="form-input" />
-            </div>
-        </div>
-        <div className="text-right mt-6">
-            <button type="submit" className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition-colors">
-                Add Customer
-            </button>
-        </div>
-      </form>
-      <style>{`.form-input { display: block; width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); transition: box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out; } .form-input:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }`}</style>
 
 
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-gray-700">Existing Customers</h2>
-        <div className="overflow-x-auto rounded-lg border">
-            <table className="min-w-full bg-white">
-                <thead className="bg-gray-100">
-                    <tr>
-                        <th className="th-cell">Name</th>
-                        <th className="th-cell">Address</th>
-                        <th className="th-cell">Vehicle Rego</th>
-                        <th className="th-cell">Vehicle Details</th>
-                        <th className="th-cell text-center">Actions</th>
-                    </tr>
-                </thead>
-                      <tbody className="divide-y divide-gray-200">
-                          {customers.map(customer => (
-                              <tr key={customer.id}>
-                                  <td className="td-cell font-medium text-gray-900">{customer.name}</td>
-                                  <td className="td-cell whitespace-pre-wrap">{customer.address}</td>
-                                                <td className="td-cell">{(customer.vehicles || []).map(v => v.rego).join(', ')}</td>
-                                                <td className="td-cell">
-                                                    {(customer.vehicles || []).length === 0 ? (
-                                                        <span className="text-gray-500">No vehicles</span>
-                                                    ) : (
-                                                        <div className="space-y-2">
-                                                            {(customer.vehicles || []).map(v => (
-                                                                <div key={v.id} className="flex items-center justify-between">
-                                                                    <div>
-                                                                        <div className="font-medium">{v.desc || 'Vehicle'}</div>
-                                                                        <div className="text-sm text-gray-600">{v.rego} • {v.odo}</div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <button onClick={() => startEditVehicle(customer.id, v)} className="text-indigo-600 hover:text-indigo-800 mr-3">Edit</button>
-                                                                        <button onClick={() => handleRemoveVehicle(customer.id, v.id)} className="text-red-600 hover:text-red-800 transition-colors">Remove</button>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </td>
-                                                <td className="td-cell text-center">
-                                                    <div className="space-x-2">
-                                          {onEditCustomer && (
-                                              <button onClick={() => onEditCustomer(customer)} className="text-indigo-600 hover:text-indigo-800">Edit</button>
-                                          )}
-                                                        <button onClick={() => handleRemove(customer.id)} className="text-red-600 hover:text-red-800 transition-colors font-medium">Delete</button>
+    return (
+        <div className="space-y-6 max-w-6xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-slate-900">Manage Customers</h1>
+
+            <Card title="Add New Customer">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Input
+                            label="Customer Name"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            placeholder="e.g., John Smith"
+                            required
+                        />
+                        <Input
+                            label="Vehicle Rego (Number Plate)"
+                            value={rego}
+                            onChange={e => setRego(e.target.value)}
+                            placeholder="e.g., ABC-123"
+                        />
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Address</label>
+                            <textarea
+                                value={address}
+                                onChange={e => setAddress(e.target.value)}
+                                placeholder="123 Main Street..."
+                                rows={3}
+                                className="block w-full rounded-lg shadow-sm py-2.5 px-3 text-base bg-white text-slate-900 placeholder-slate-400 border border-slate-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 focus:outline-none transition-colors duration-200"
+                            />
+                        </div>
+                        <Input
+                            label="Vehicle Odometer (km)"
+                            value={odo}
+                            onChange={e => setOdo(e.target.value)}
+                            placeholder="e.g., 150,000 km"
+                        />
+                        <Input
+                            label="Vehicle Description"
+                            value={desc}
+                            onChange={e => setDesc(e.target.value)}
+                            placeholder="e.g., 2020 Honda Civic"
+                        />
+                    </div>
+                    <div className="flex justify-end pt-4 border-t border-yellow-500/20">
+                        <Button type="submit">
+                            Add Customer
+                        </Button>
+                    </div>
+                </form>
+            </Card>
+
+            <TableContainer>
+                <div className="px-6 py-4 border-b border-slate-100 bg-gray-50">
+                    <h2 className="text-lg font-bold text-slate-900">Existing Customers</h2>
+                </div>
+
+                <Table>
+                    <Thead>
+                        <Tr className="hover:bg-transparent">
+                            <Th>Name</Th>
+                            <Th>Address</Th>
+                            <Th className="text-center">Actions</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {customers.map(customer => (
+                            <Tr key={customer.id}>
+                                <Td className="font-bold">{customer.name}</Td>
+                                <Td className="whitespace-pre-wrap max-w-xs truncate">{customer.address}</Td>
+                                <Td className="text-center">
+                                    <div className="space-x-4">
+                                        {onEditCustomer && (
+                                            <button onClick={() => onEditCustomer(customer)} className="text-yellow-400 hover:text-yellow-300 font-bold uppercase text-xs tracking-wide">Edit</button>
+                                        )}
+                                        <div className="inline-block">
+                                            {/* Seperate Edit button for in-place edit */}
+                                            <button onClick={() => startEditCustomer(customer)} className="text-orange-400 hover:text-orange-300 font-bold uppercase text-xs tracking-wide mr-4">Quick Edit</button>
+                                            <button onClick={() => handleRemove(customer.id)} className="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wide">Delete</button>
+                                        </div>
+                                    </div>
+                                </Td>
+                            </Tr>
+                        ))}
+                        {customers.length === 0 && (
+                            <Tr className="hover:bg-transparent">
+                                <Td colSpan={3} className="text-center py-12 text-slate-500">No customers found.</Td>
+                            </Tr>
+                        )}
+                    </Tbody>
+                </Table>
+            </TableContainer>
+
+            {editingCustomerId && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="w-full max-w-2xl">
+                        <Card title="Edit Customer">
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <Input label="Name" value={editName} onChange={e => setEditName(e.target.value)} />
+                                    <div className="md:col-span-2">
+                                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Address</label>
+                                        <textarea
+                                            value={editAddress}
+                                            onChange={e => setEditAddress(e.target.value)}
+                                            className="block w-full rounded-lg shadow-sm py-2.5 px-3 text-base bg-white text-slate-900 placeholder-slate-400 border border-slate-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 focus:outline-none transition-colors duration-200"
+                                            rows={3}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-200 pt-4">
+                                    <h4 className="text-lg font-bold text-slate-800 uppercase tracking-wide mb-4">Vehicles</h4>
+                                    <div className="space-y-3 mb-6">
+                                        {(() => {
+                                            const c = customers.find(x => x.id === editingCustomerId);
+                                            if (!c || (c.vehicles || []).length === 0) return <div className="text-sm text-slate-500 italic">No vehicles</div>;
+                                            return (c.vehicles || []).map(v => (
+                                                <div key={v.id} className="p-3 bg-white rounded border border-gray-200 flex items-center justify-between shadow-sm">
+                                                    <div>
+                                                        <div className="font-medium text-slate-900">{v.desc || 'Vehicle'}</div>
+                                                        <div className="text-sm text-slate-500">{v.rego} • {v.odo}</div>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                          {customers.length === 0 && (
-                              <tr>
-                                  <td colSpan={5} className="text-center py-8 text-gray-500">No customers found.</td>
-                              </tr>
-                          )}
-                      </tbody>
-                  </table>
+                                                    <div className="space-x-3">
+                                                        <button onClick={() => startEditVehicle(c.id, v)} className="text-xs font-bold text-blue-600 hover:text-blue-700 uppercase">Edit</button>
+                                                        <button onClick={() => handleRemoveVehicle(c.id, v.id)} className="text-xs font-bold text-red-600 hover:text-red-700 uppercase">Delete</button>
+                                                    </div>
+                                                </div>
+                                            ));
+                                        })()}
+                                    </div>
 
-                  <div className="mt-6">
-                      {editingCustomerId ? (
-                          <div className="p-4 bg-white border rounded-lg">
-                              <h3 className="text-lg font-semibold mb-3">Edit Customer</h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <div>
-                                      <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                      <input value={editName} onChange={e => setEditName(e.target.value)} className="form-input" />
-                                  </div>
-                                  <div>
-                                      <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                                      <input value={editAddress} onChange={e => setEditAddress(e.target.value)} className="form-input" />
-                                  </div>
-                              </div>
+                                    {editingVehicleId && (
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-slate-200 mb-6">
+                                            <h5 className="font-bold text-slate-900 mb-3 text-sm">Edit Vehicle</h5>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                <Input value={editVehicleRego} onChange={e => setEditVehicleRego(e.target.value)} placeholder="Rego" />
+                                                <Input value={editVehicleOdo} onChange={e => setEditVehicleOdo(e.target.value)} placeholder="Odo" />
+                                                <Input value={editVehicleDesc} onChange={e => setEditVehicleDesc(e.target.value)} placeholder="Desc" />
+                                            </div>
+                                            <div className="mt-3 flex justify-end space-x-2">
+                                                <Button variant="secondary" onClick={() => setEditingVehicleId('')} size="sm">Cancel</Button>
+                                                <Button onClick={saveVehicleEdits} size="sm">Save Vehicle</Button>
+                                            </div>
+                                        </div>
+                                    )}
 
-                              <div className="mt-4">
-                                  <h4 className="font-semibold mb-2">Vehicles</h4>
-                                  <div className="space-y-3">
-                                      {(() => {
-                                          const c = customers.find(x => x.id === editingCustomerId);
-                                          if (!c || (c.vehicles || []).length === 0) return <div className="text-sm text-gray-500">No vehicles</div>;
-                                          return (c.vehicles || []).map(v => (
-                                              <div key={v.id} className="p-2 border rounded flex items-center justify-between">
-                                                  <div>
-                                                      <div className="font-medium">{v.desc || 'Vehicle'}</div>
-                                                      <div className="text-sm text-gray-600">{v.rego} • {v.odo}</div>
-                                                  </div>
-                                                  <div className="space-x-2">
-                                                      <button onClick={() => startEditVehicle(c.id, v)} className="text-indigo-600 hover:text-indigo-800">Edit</button>
-                                                      <button onClick={() => handleRemoveVehicle(c.id, v.id)} className="text-red-600 hover:text-red-800">Delete</button>
-                                                  </div>
-                                              </div>
-                                          ));
-                                      })()}
-                                  </div>
+                                    <div className="bg-gray-50 p-4 rounded-lg border border-slate-200">
+                                        <h5 className="font-bold text-slate-900 mb-3 text-sm">Add Vehicle</h5>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <Input value={addRego} onChange={e => setAddRego(e.target.value)} placeholder="Rego" />
+                                            <Input value={addOdo} onChange={e => setAddOdo(e.target.value)} placeholder="Odo" />
+                                            <Input value={addDesc} onChange={e => setAddDesc(e.target.value)} placeholder="Desc" />
+                                        </div>
+                                        <div className="mt-3 flex justify-end">
+                                            <Button onClick={addVehicleToEditingCustomer} size="sm">Add Vehicle</Button>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                  {editingVehicleId && (
-                                      <div className="mt-4 p-3 border rounded bg-gray-50">
-                                          <h5 className="font-semibold mb-2">Edit Vehicle</h5>
-                                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                              <input value={editVehicleRego} onChange={e => setEditVehicleRego(e.target.value)} placeholder="Rego" className="form-input" />
-                                              <input value={editVehicleOdo} onChange={e => setEditVehicleOdo(e.target.value)} placeholder="Odo" className="form-input" />
-                                              <input value={editVehicleDesc} onChange={e => setEditVehicleDesc(e.target.value)} placeholder="Desc" className="form-input" />
-                                          </div>
-                                          <div className="mt-3 space-x-2 text-right">
-                                              <button onClick={() => setEditingVehicleId('')} className="px-3 py-1 border rounded">Cancel</button>
-                                              <button onClick={saveVehicleEdits} className="px-3 py-1 bg-blue-600 text-white rounded">Save</button>
-                                          </div>
-                                      </div>
-                                  )}
-
-                                  <div className="mt-4 p-3 border rounded bg-gray-50">
-                                      <h5 className="font-semibold mb-2">Add Vehicle</h5>
-                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                          <input value={addRego} onChange={e => setAddRego(e.target.value)} placeholder="Rego" className="form-input" />
-                                          <input value={addOdo} onChange={e => setAddOdo(e.target.value)} placeholder="Odo" className="form-input" />
-                                          <input value={addDesc} onChange={e => setAddDesc(e.target.value)} placeholder="Desc" className="form-input" />
-                                      </div>
-                                      <div className="mt-3 text-right">
-                                          <button onClick={addVehicleToEditingCustomer} className="px-4 py-2 bg-green-600 text-white rounded">Add Vehicle</button>
-                                      </div>
-                                  </div>
-                              </div>
-
-                              <div className="mt-4 flex justify-end space-x-2">
-                                  <button onClick={cancelEdit} className="px-4 py-2 border rounded">Cancel</button>
-                                  <button onClick={saveCustomerEdits} className="px-4 py-2 bg-blue-600 text-white rounded">Save Customer</button>
-                              </div>
-                          </div>
-                      ) : null}
-                  </div>
-            <style>{`
-                .th-cell { padding: 0.75rem 1.5rem; text-align: left; font-size: 0.75rem; color: #4B5563; text-transform: uppercase; letter-spacing: 0.05em; }
-                .td-cell { padding: 1rem 1.5rem; white-space: nowrap; font-size: 0.875rem; color: #374151; }
-            `}</style>
+                                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                                    <Button variant="secondary" onClick={cancelEdit}>Cancel</Button>
+                                    <Button onClick={saveCustomerEdits}>Save Changes</Button>
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            )}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ManageCustomers;
+

@@ -286,21 +286,21 @@ const AppContent: React.FC = () => {
     }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar activePage={activePage} setActivePage={handleNavigate} onLogout={logout} />
       <main className="flex-1 p-8 overflow-y-auto h-screen">
         <div className="max-w-7xl mx-auto">
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-yellow-500/20 border-t-yellow-400"></div>
             </div>
           ) : error ? (
-            <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-red-100">
-              <p className="text-red-600 mb-4 font-medium">{error}</p>
+              <div className="text-center py-12 bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-lg shadow-xl border-2 border-red-500/40">
+                <p className="text-red-400 mb-6 font-bold text-lg">{error}</p>
               <button
                 type="button"
                 onClick={loadLookups}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-slate-900 font-black uppercase tracking-wide rounded-md shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50 transition-all duration-200 border-2 border-yellow-400/50"
               >
                 Retry
               </button>

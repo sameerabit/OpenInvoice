@@ -4,6 +4,7 @@ import { createService, updateService, deleteService } from '../api';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Card } from './ui/Card';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 
 interface ManageItemsProps {
   items: ServiceOrProduct[];
@@ -118,7 +119,7 @@ const ManageServices: React.FC<ManageItemsProps> = ({ items, onRefresh, products
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Manage Services</h1>
@@ -183,13 +184,13 @@ const ManageServices: React.FC<ManageItemsProps> = ({ items, onRefresh, products
                 className="input"
               />
               {showSuggestions && filteredProducts.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-48 overflow-y-auto ring-1 ring-slate-900/5">
                   {filteredProducts.map(product => (
                     <button
                       key={product.id}
                       type="button"
                       onClick={() => toggleProductSelection(product.id)}
-                      className="w-full text-left px-3 py-2 hover:bg-slate-50 text-sm text-slate-700 border-b border-slate-100 last:border-b-0"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-slate-700 border-b border-slate-100 last:border-b-0 transition-colors"
                     >
                       {product.description}
                     </button>
@@ -207,13 +208,13 @@ const ManageServices: React.FC<ManageItemsProps> = ({ items, onRefresh, products
                     return (
                       <span
                         key={productId}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-100 text-primary-800 text-xs font-medium rounded-full"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full"
                       >
                         {product?.description}
                         <button
                           type="button"
                           onClick={() => toggleProductSelection(productId)}
-                          className="ml-1 text-primary-600 hover:text-primary-800"
+                          className="ml-1 text-blue-600 hover:text-blue-800"
                         >
                           ×
                         </button>
@@ -231,94 +232,100 @@ const ManageServices: React.FC<ManageItemsProps> = ({ items, onRefresh, products
         </form>
       </Card>
 
-      <Card title="Existing Services">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-200 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                <th className="py-3 px-4">Description</th>
-                <th className="py-3 px-4 text-right">Price</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {items.map(item => (
-                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-3 px-4 text-sm font-medium text-slate-900">{item.description}</td>
-                  <td className="py-3 px-4 text-sm text-slate-600 text-right">${item.price.toFixed(2)}</td>
-                  <td className="py-3 px-4 text-sm text-center space-x-2">
-                    <Button variant="ghost" size="sm" onClick={() => startEdit(item)}>Edit</Button>
-                    <Button variant="danger" size="sm" onClick={() => handleRemove(item.id)}>Delete</Button>
-                  </td>
-                </tr>
-              ))}
-              {items.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="py-8 text-center text-slate-400 text-sm">
-                    No services found. Add one above.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      <TableContainer>
+        <div className="px-6 py-4 border-b border-slate-100 bg-gray-50">
+          <h2 className="text-lg font-bold text-slate-900">Existing Services</h2>
         </div>
-      </Card>
+        <Table>
+          <Thead>
+            <Tr className="hover:bg-transparent">
+              <Th>Description</Th>
+              <Th className="text-right">Price</Th>
+              <Th className="text-center">Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map(item => (
+              <Tr key={item.id}>
+                <Td className="font-bold">{item.description}</Td>
+                <Td className="text-right font-medium text-slate-900">${item.price.toFixed(2)}</Td>
+                <Td className="text-center">
+                  <Button variant="ghost" size="sm" onClick={() => startEdit(item)} className="mr-2 text-blue-600 hover:text-blue-700 uppercase font-bold text-xs">Edit</Button>
+                  <Button variant="danger" size="sm" onClick={() => handleRemove(item.id)} className="uppercase font-bold text-xs">Delete</Button>
+                </Td>
+              </Tr>
+            ))}
+            {items.length === 0 && (
+              <Tr className="hover:bg-transparent">
+                <Td colSpan={3} className="text-center py-12 text-slate-500">No services found. Add one above.</Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </TableContainer>
 
       {editingServiceId && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all">
-            <h2 className="text-2xl font-bold mb-6 text-slate-900">Edit Service</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <Input
-                label="Description"
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-              />
-              <Input
-                label="Price"
-                type="number"
-                value={editPrice}
-                onChange={(e) => setEditPrice(e.target.value === '' ? '' : parseFloat(e.target.value))}
-              />
-            </div>
-            <div className="mb-6">
-              <label htmlFor="editChecklist" className="block text-sm font-medium text-slate-700 mb-1">
-                Checklist (optional)
-              </label>
-              <textarea
-                id="editChecklist"
-                value={editChecklist}
-                onChange={(e) => setEditChecklist(e.target.value)}
-                placeholder="e.g., Check oil level\nCheck tire pressure"
-                className="input"
-                rows={3}
-              />
-            </div>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl transform transition-all" title="Edit Service">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input
+                  label="Description"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
+                <Input
+                  label="Price ($)"
+                  type="number"
+                  value={editPrice}
+                  onChange={(e) => setEditPrice(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                />
+              </div>
+              <div>
+                <label htmlFor="editChecklist" className="block text-sm font-semibold text-slate-700 mb-1">
+                  Checklist (optional)
+                </label>
+                <textarea
+                  id="editChecklist"
+                  value={editChecklist}
+                  onChange={(e) => setEditChecklist(e.target.value)}
+                  placeholder="e.g., Check oil level\nCheck tire pressure"
+                  className={`
+                      block w-full rounded-lg shadow-sm py-2.5 px-3 text-base
+                      bg-white text-slate-900 placeholder-slate-400
+                      border border-slate-300 focus:border-blue-500 focus:ring-blue-500
+                      focus:ring-1 focus:outline-none
+                      transition-colors duration-200
+                    `}
+                  rows={3}
+                />
+              </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Included Products</label>
-              <div className="flex flex-wrap gap-2">
-                {products.map(product => (
-                  <button
-                    key={product.id}
-                    type="button"
-                    onClick={() => toggleProductSelection(product.id, true)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${editSelectedProducts.includes(product.id)
-                      ? 'bg-primary-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
-                  >
-                    {product.description}
-                  </button>
-                ))}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Included Products</label>
+                <div className="flex flex-wrap gap-2">
+                  {products.map(product => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => toggleProductSelection(product.id, true)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium transition-colors border ${editSelectedProducts.includes(product.id)
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-gray-50'
+                        }`}
+                    >
+                      {product.description}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                <Button variant="secondary" onClick={cancelEdit}>Cancel</Button>
+                <Button onClick={handleUpdate}>Save Changes</Button>
               </div>
             </div>
-
-            <div className="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-              <Button variant="secondary" onClick={cancelEdit}>Cancel</Button>
-              <Button onClick={handleUpdate}>Save Changes</Button>
-            </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

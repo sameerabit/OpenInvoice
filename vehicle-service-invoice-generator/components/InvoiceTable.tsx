@@ -38,14 +38,14 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
 
   return (
     <div className="mb-8">
-      <table className="w-full border-collapse border border-gray-400">
+      <table className="w-full border-collapse border border-gray-300">
         <thead>
-          <tr className="bg-stone-200 text-sm font-semibold">
-            <th className="border border-gray-400 p-2 text-center w-12">NO</th>
-            <th className="border border-gray-400 p-2 text-left">DESCRIPTION</th>
-            <th className="border border-gray-400 p-2 text-center w-20">QTY</th>
-            <th className="border border-gray-400 p-2 text-center w-28">PRICE ($)</th>
-            <th className="border border-gray-400 p-2 text-center w-28">SUBTOTAL</th>
+          <tr className="bg-gray-100 text-sm font-semibold">
+            <th className="border border-gray-300 p-2 text-center w-12">NO</th>
+            <th className="border border-gray-300 p-2 text-left">DESCRIPTION</th>
+            <th className="border border-gray-300 p-2 text-center w-20">QTY</th>
+            <th className="border border-gray-300 p-2 text-center w-28">PRICE ($)</th>
+            <th className="border border-gray-300 p-2 text-center w-28">SUBTOTAL</th>
             {onRemoveItem && <th className="w-8 no-print"></th>}
           </tr>
         </thead>
@@ -60,10 +60,10 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
 
             return (
               <tr key={item.id} className={`text-sm ${isIncluded ? 'bg-blue-50' : ''} ${isChecklist ? 'bg-gray-50' : ''}`}>
-                <td className="border border-gray-400 p-2 text-center align-top">
+                <td className="border-x border-gray-300 p-2 text-center align-top">
                   {!isIncluded && !isChecklist ? index + 1 : ''}
                 </td>
-                <td className="border border-gray-400 p-2 align-top">
+                <td className="border-x border-gray-300 p-2 align-top">
                   <div className={isIncluded ? 'pl-4' : isChecklist ? 'ml-4 pl-2 border-l-2 border-gray-400' : ''}>
                     {onItemChange ? (
                       <textarea
@@ -77,7 +77,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
                     )}
                   </div>
                 </td>
-                <td className="border border-gray-400 p-2 align-top text-center">
+                <td className="border-x border-gray-300 p-2 align-top text-center">
                   {isSpecial ? (
                     <span>&nbsp;</span>
                   ) : onItemChange ? (
@@ -92,7 +92,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
                     <span>{item.quantity}</span>
                   )}
                 </td>
-                <td className="border border-gray-400 p-2 align-top text-center">
+                <td className="border-x border-gray-300 p-2 align-top text-center">
                   {isSpecial ? (
                     <span>&nbsp;</span>
                   ) : onItemChange ? (
@@ -107,11 +107,11 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ items, onItemChange, onAddC
                      <span>{Number(item.price).toFixed(2)}</span>
                   )}
                 </td>
-                <td className="border border-gray-400 p-2 text-center align-top">
+                <td className="border-x border-gray-300 p-2 text-center align-top">
                   {!isSpecial && subtotal > 0 ? subtotal.toFixed(2) : ''}
                 </td>
                 {onRemoveItem && (
-                  <td className="border-r border-gray-400 p-1 text-center align-middle no-print">
+                  <td className="border-r border-gray-300 p-1 text-center align-middle no-print">
                     <button onClick={() => onRemoveItem(item.id)} className="text-red-500 hover:text-red-700 opacity-50 hover:opacity-100 transition-opacity" aria-label="Remove item">
                       &#x2715;
                     </button>

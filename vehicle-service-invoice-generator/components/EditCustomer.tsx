@@ -103,8 +103,8 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Edit Customer</h1>
-          <p className="mt-1 text-slate-500">Update customer details and manage vehicles</p>
+          <h1 className="text-3xl font-bold text-slate-100">Edit Customer</h1>
+          <p className="mt-1 text-slate-400">Update customer details and manage vehicles</p>
         </div>
       </div>
 
@@ -141,7 +141,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
           ) : (
             <div className="space-y-3">
               {customer.vehicles.map((vehicle) => (
-                <div key={vehicle.id} className="p-4 border border-slate-200 rounded-lg">
+                <div key={vehicle.id} className="p-4 border border-yellow-500/20 rounded-lg bg-slate-800/50">
                   {editingVehicleId === vehicle.id ? (
                     <div className="space-y-3">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -174,21 +174,21 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
                   ) : (
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-slate-900">{vehicle.desc || 'Vehicle'}</div>
-                        <div className="text-sm text-slate-600">
+                          <div className="font-medium text-slate-200">{vehicle.desc || 'Vehicle'}</div>
+                          <div className="text-sm text-slate-400">
                           {vehicle.rego} {vehicle.odo && `• ${vehicle.odo}`}
                         </div>
                       </div>
                       <div className="space-x-2">
                         <button
                           onClick={() => startEditVehicle(vehicle.id)}
-                          className="text-indigo-600 hover:text-indigo-800 font-medium"
+                            className="text-yellow-400 hover:text-yellow-300 font-bold uppercase text-xs tracking-wide"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteVehicle(vehicle.id)}
-                          className="text-red-600 hover:text-red-800 font-medium"
+                            className="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wide"
                         >
                           Delete
                         </button>
@@ -201,8 +201,8 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
           )}
 
           {/* Add Vehicle Form */}
-          <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h3 className="font-semibold text-slate-900 mb-3">Add New Vehicle</h3>
+          <div className="mt-6 p-4 bg-slate-800/80 rounded-lg border border-yellow-500/20">
+            <h3 className="font-bold text-yellow-400 mb-3 uppercase tracking-wide">Add New Vehicle</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Input
                 id="add-rego"
@@ -227,7 +227,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
               />
             </div>
             <div className="mt-3 flex justify-end">
-              <Button variant="secondary" onClick={handleAddVehicle}>
+              <Button type="button" onClick={handleAddVehicle}>
                 Add Vehicle
               </Button>
             </div>
@@ -236,7 +236,7 @@ const EditCustomer: React.FC<EditCustomerProps> = ({ customer, onSave, onCancel 
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+      <div className="flex justify-end space-x-3 pt-4 border-t border-yellow-500/20">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

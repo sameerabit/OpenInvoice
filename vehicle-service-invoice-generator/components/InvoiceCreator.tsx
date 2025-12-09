@@ -97,7 +97,7 @@ const InvoiceCreator: React.FC<InvoiceCreatorProps> = ({ initialData }) => {
       </div>
 
       <div id="invoice-preview" className="printable-area max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-lg rounded-lg border border-gray-200 min-h-[29.7cm] relative">
-        <InvoiceHeader title="Tax Invoice" />
+        <InvoiceHeader title="Invoice" />
         <InvoiceDetails data={data} onDataChange={handleDataChange} />
         <InvoiceTable
           items={data.lineItems}

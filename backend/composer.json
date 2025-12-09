@@ -1,6 +1,7 @@
 {
-    "type": "project",
-    "license": "proprietary",
+    "name": "virajamarasinghe/open-invoice-backend",
+    "description": "Backend API for Open Invoice Management System",
+    "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {

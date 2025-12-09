@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchQuotations } from '../api';
 import type { QuotationData } from '../types';
-
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 interface QuoteHistoryProps {
   onViewQuote: (quote: QuotationData) => void;
   filterStatus?: string;
@@ -66,7 +66,7 @@ export const QuoteHistory: React.FC<QuoteHistoryProps> = ({ onViewQuote, filterS
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-gray-500">Loading quotations...</div>
+        <div className="text-slate-400">Loading quotations...</div>
       </div>
     );
   }
@@ -74,8 +74,8 @@ export const QuoteHistory: React.FC<QuoteHistoryProps> = ({ onViewQuote, filterS
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Quote History</h2>
-        <div className="text-sm text-gray-600">
+        <h2 className="text-2xl font-bold text-slate-900">Quote History</h2>
+        <div className="text-sm text-slate-400">
           {filteredQuotations.length} quote{filteredQuotations.length !== 1 ? 's' : ''}
         </div>
       </div>
@@ -86,98 +86,84 @@ export const QuoteHistory: React.FC<QuoteHistoryProps> = ({ onViewQuote, filterS
           placeholder="Search by quote number or customer..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-medium shadow-sm"
         />
       </div>
 
       {filteredQuotations.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-slate-500">
           {searchTerm ? 'No quotations found matching your search.' : 'No quotations yet.'}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Quote #
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vehicle
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+          <TableContainer>
+            <Table>
+              <Thead>
+                <Tr className="hover:bg-transparent">
+                  <Th>Quote #</Th>
+                  <Th>Date</Th>
+                  <Th>Customer</Th>
+                  <Th>Vehicle</Th>
+                  <Th className="text-right">Total</Th>
+                  <Th className="text-center">Status</Th>
+                  <Th className="text-right">Actions</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
               {filteredQuotations.map((quote) => (
-                <tr key={quote.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <Tr key={quote.id}>
+                  <Td className="font-bold text-slate-900">
                     {quote.quotationNumber}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  </Td>
+                  <Td className="text-slate-600">
                     {formatDate(quote.date)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    <div>{quote.customerName}</div>
+                  </Td>
+                  <Td>
+                    <div className="text-slate-900">{quote.customerName}</div>
                     {quote.customerAddress && (
-                      <div className="text-xs text-gray-500">{quote.customerAddress}</div>
+                      <div className="text-xs text-slate-500">{quote.customerAddress}</div>
                     )}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  </Td>
+                  <Td className="text-slate-600">
                     {quote.vehicleRego ? (
                       <div>
-                        <div className="font-medium">{quote.vehicleRego}</div>
+                        <div className="font-medium text-slate-900">{quote.vehicleRego}</div>
                         {quote.vehicleDesc && (
-                          <div className="text-xs">{quote.vehicleDesc}</div>
+                          <div className="text-xs text-slate-500">{quote.vehicleDesc}</div>
                         )}
                       </div>
                     ) : (
                       <span className="text-gray-400">-</span>
                     )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                  </Td>
+                  <Td className="text-right font-bold text-slate-900">
                     ${calculateTotal(quote).toFixed(2)}
-                  </td>
-                   <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${quote.status === 'ISSUED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                  </Td>
+                  <Td className="text-center">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${quote.status === 'ISSUED' || quote.status === 'ACCEPTED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                       {quote.status || 'DRAFT'}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                  </Td>
+                  <Td className="text-right">
                     <button
                       onClick={() => onViewQuote(quote)}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
+                      className="text-blue-600 hover:text-blue-800 font-semibold uppercase text-xs tracking-wide"
                     >
                       View
                     </button>
                     {onEditQuote && (
                         <button
                             onClick={() => onEditQuote(quote)}
-                            className="text-indigo-600 hover:text-indigo-900 font-medium ml-4"
+                        className="text-indigo-600 hover:text-indigo-800 font-semibold uppercase text-xs tracking-wide ml-4"
                         >
                             Edit
                         </button>
                     )}
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+              </Tbody>
+            </Table>
+          </TableContainer>
       )}
     </div>
   );

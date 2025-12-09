@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchInvoices } from '../api';
 import type { InvoiceData } from '../types';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 
 interface InvoiceHistoryProps {
   onViewInvoice: (invoice: InvoiceData) => void;
@@ -68,7 +69,7 @@ export const InvoiceHistory: React.FC<InvoiceHistoryProps> = ({ onViewInvoice, o
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-gray-500">Loading invoices...</div>
+        <div className="text-slate-400">Loading invoices...</div>
       </div>
     );
   }
@@ -76,8 +77,8 @@ export const InvoiceHistory: React.FC<InvoiceHistoryProps> = ({ onViewInvoice, o
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Invoice History</h2>
-        <div className="text-sm text-gray-600">
+        <h2 className="text-2xl font-bold text-slate-900">Invoice History</h2>
+        <div className="text-sm text-slate-400">
           {filteredInvoices.length} invoice{filteredInvoices.length !== 1 ? 's' : ''}
         </div>
       </div>
@@ -88,58 +89,58 @@ export const InvoiceHistory: React.FC<InvoiceHistoryProps> = ({ onViewInvoice, o
           placeholder="Search by invoice number or customer..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 font-medium shadow-sm"
         />
       </div>
 
       {filteredInvoices.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-slate-500">
           {searchTerm ? 'No invoices found matching your search.' : 'No invoices yet.'}
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <TableContainer>
+            <Table>
+              <Thead>
+                <Tr className="hover:bg-transparent">
+                  <Th>
                   Invoice #
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th>
                   Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th>
                   Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th>
                   Vehicle
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th className="text-right">
                   Total
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th className="text-center">
                   Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </Th>
+                  <Th className="text-right">
                   Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
               {filteredInvoices.map((invoice) => (
-                <tr key={invoice.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <Tr key={invoice.id}>
+                  <Td className="font-bold">
                     {invoice.invoiceNumber}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  </Td>
+                  <Td className="text-slate-600">
                     {formatDate(invoice.issuedOn)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  </Td>
+                  <Td>
                     <div>{invoice.customerName}</div>
                     {invoice.customerAddress && (
-                      <div className="text-xs text-gray-500">{invoice.customerAddress}</div>
+                      <div className="text-xs text-slate-400">{invoice.customerAddress}</div>
                     )}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  </Td>
+                  <Td className="text-slate-600">
                     {invoice.vehicleRego ? (
                       <div>
                         <div className="font-medium">{invoice.vehicleRego}</div>
@@ -148,38 +149,38 @@ export const InvoiceHistory: React.FC<InvoiceHistoryProps> = ({ onViewInvoice, o
                         )}
                       </div>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                        <span className="text-slate-500">-</span>
                     )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                  </Td>
+                  <Td className="text-right font-bold text-slate-900">
                     ${calculateTotal(invoice).toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                  </Td>
+                  <Td className="text-center">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${invoice.status === 'DRAFT' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
                       {invoice.status || 'ISSUED'}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                  </Td>
+                  <Td className="text-right">
                     <button
                       onClick={() => onViewInvoice(invoice)}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
+                      className="text-blue-600 hover:text-blue-800 font-semibold uppercase text-xs tracking-wide"
                     >
                       View
                     </button>
                     {onEditInvoice && (
                         <button
                             onClick={() => onEditInvoice(invoice)}
-                            className="text-indigo-600 hover:text-indigo-900 font-medium ml-4"
+                        className="text-indigo-600 hover:text-indigo-800 font-semibold uppercase text-xs tracking-wide ml-4"
                         >
                             Edit
                         </button>
                     )}
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+              </Tbody>
+            </Table>
+          </TableContainer>
       )}
     </div>
   );

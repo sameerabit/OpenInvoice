@@ -9,15 +9,13 @@ const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({ title = 'Invoice' }) => {
   return (
     <div className="flex justify-between items-start mb-8">
       <div className="flex items-center space-x-4">
-        <img
-          src="/assets/lara-logo.jpg"
-          alt="LARA Auto Services Logo"
-          className="w-32 h-32 object-contain"
-        />
+        <div className="h-20 w-20 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+          <span className="text-3xl font-black text-white">OI</span>
+        </div>
         <div>
-          <h1 className="text-4xl md:text-5xl font-serif text-blue-700">LARA AUTO SERVICES</h1>
-          <div className="text-xs text-gray-600 mt-2">
-            <p>ABN 634 2523 5350</p>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-tight">OPEN INVOICE</h1>
+          <div className="text-xs text-slate-500 mt-2 font-medium">
+            <p className="uppercase tracking-wider">Management System</p>
             <p>Phone: 0451 537 662</p>
           </div>
         </div>

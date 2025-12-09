@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import type { Customer, ServiceOrProduct, InvoiceItem, Vehicle } from '../types';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import { fetchCustomers, createInvoice } from '../api';
 import { Card } from './ui/Card';
+import { Input } from './ui/Input';
+import { Button } from './ui/Button';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 
 interface CreateSaleProps {
   customers: Customer[];
@@ -208,7 +210,7 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio text-primary-600"
+                    className="form-radio text-blue-600"
                     checked={!isNewCustomer}
                     onChange={() => setIsNewCustomer(false)}
                   />
@@ -217,7 +219,7 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio text-primary-600"
+                    className="form-radio text-blue-600"
                     checked={isNewCustomer}
                     onChange={() => {
                       setIsNewCustomer(true);
@@ -231,7 +233,7 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
 
               {!isNewCustomer ? (
                 <div>
-                  <label htmlFor="customer-select" className="block text-sm font-medium text-slate-700 mb-1">Select Customer</label>
+                  <label htmlFor="customer-select" className="block text-sm font-semibold text-slate-700 mb-1.5">Select Customer</label>
                   <select
                     id="customer-select"
                     className="input"
@@ -266,17 +268,17 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio text-primary-600"
+                    className="form-radio text-blue-600"
                     checked={!isNewVehicle}
                     onChange={() => setIsNewVehicle(false)}
                     disabled={isNewCustomer}
                   />
-                  <span className={`ml-2 ${isNewCustomer ? 'text-slate-400' : ''}`}>Existing Vehicle</span>
+                  <span className={`ml-2 ${isNewCustomer ? 'text-slate-400' : 'text-slate-700'}`}>Existing Vehicle</span>
                 </label>
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio text-primary-600"
+                    className="form-radio text-blue-600"
                     checked={isNewVehicle}
                     onChange={() => setIsNewVehicle(true)}
                   />
@@ -286,7 +288,7 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
 
               {!isNewVehicle && !isNewCustomer ? (
                 <div>
-                  <label htmlFor="vehicle-select" className="block text-sm font-medium text-slate-700 mb-1">Select Vehicle</label>
+                  <label htmlFor="vehicle-select" className="block text-sm font-semibold text-slate-700 mb-1.5">Select Vehicle</label>
                   <select
                     id="vehicle-select"
                     className="input"
@@ -327,30 +329,30 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
               </Button>
             </div>
 
-            <div className="overflow-x-auto border rounded-lg border-slate-200">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50 text-slate-500 font-medium text-xs uppercase">
-                  <tr>
-                    <th className="px-4 py-3">Description</th>
-                    <th className="px-4 py-3 text-center w-24">Qty</th>
-                    <th className="px-4 py-3 text-right w-32">Price</th>
-                    <th className="px-4 py-3 text-right w-32">Total</th>
-                    <th className="px-4 py-3 w-16"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
+            <TableContainer className="border rounded-lg border-slate-200">
+              <Table className="w-full text-left">
+                <Thead className="bg-gray-50 text-slate-500 font-semibold text-xs uppercase">
+                  <Tr className="hover:bg-transparent">
+                    <Th className="px-4 py-3">Description</Th>
+                    <Th className="px-4 py-3 text-center w-24">Qty</Th>
+                    <Th className="px-4 py-3 text-right w-32">Price</Th>
+                    <Th className="px-4 py-3 text-right w-32">Total</Th>
+                    <Th className="px-4 py-3 w-16"></Th>
+                  </Tr>
+                </Thead>
+                <Tbody className="divide-y divide-slate-200">
                   {lineItems.map((item, index) => (
-                    <tr key={index} className={`hover:bg-slate-50 ${item.included || item.isChecklist ? 'bg-slate-50/50' : ''}`}>
-                      <td className="px-4 py-3 text-sm text-slate-900">
+                    <Tr key={index} className={`hover:bg-gray-50 ${item.included || item.isChecklist ? 'bg-gray-50/50' : ''}`}>
+                      <Td className="px-4 py-3 text-sm text-slate-900">
                         <div className={item.included || item.isChecklist ? 'pl-4' : ''}>
                           {item.description}
                           {item.isChecklist && <span className="ml-2 text-xs text-slate-500">(Checklist)</span>}
                         </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-center">{item.quantity}</td>
-                      <td className="px-4 py-3 text-sm text-right">${item.price.toFixed(2)}</td>
-                      <td className="px-4 py-3 text-sm text-right font-medium">${(item.price * item.quantity).toFixed(2)}</td>
-                      <td className="px-4 py-3 text-center">
+                      </Td>
+                      <Td className="px-4 py-3 text-sm text-center">{item.quantity}</Td>
+                      <Td className="px-4 py-3 text-sm text-right">${item.price.toFixed(2)}</Td>
+                      <Td className="px-4 py-3 text-sm text-right font-medium">${(item.price * item.quantity).toFixed(2)}</Td>
+                      <Td className="px-4 py-3 text-center">
                         {!item.included && !item.isChecklist && (
                           <button
                             type="button"
@@ -360,27 +362,27 @@ const CreateSale: React.FC<CreateSaleProps> = ({ customers, services, products, 
                             &times;
                           </button>
                         )}
-                      </td>
-                    </tr>
+                      </Td>
+                    </Tr>
                   ))}
                   {lineItems.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-slate-400 text-sm">
+                    <Tr className="hover:bg-transparent">
+                      <Td colSpan={5} className="px-4 py-8 text-center text-slate-500 text-sm">
                         No items added yet. Click "Add Item" to start.
-                      </td>
-                    </tr>
+                      </Td>
+                    </Tr>
                   )}
-                </tbody>
-              </table>
-            </div>
+                </Tbody>
+              </Table>
+            </TableContainer>
 
             <div className="flex justify-end">
               <div className="w-full sm:w-1/3 space-y-2">
-                <div className="flex justify-between text-sm text-slate-600">
+                <div className="flex justify-between text-sm text-slate-500">
                   <span>Subtotal:</span>
                   <span>${calculateSubtotal().toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-slate-600">
+                <div className="flex justify-between text-sm text-slate-500">
                   <span>Tax (10%):</span>
                   <span>${calculateTax().toFixed(2)}</span>
                 </div>
@@ -468,7 +470,7 @@ const AddItemModal: React.FC<{
             <label className="inline-flex items-center">
               <input
                 type="radio"
-                className="form-radio text-primary-600"
+                className="form-radio text-blue-600"
                 checked={type === 'service'}
                 onChange={() => { setType('service'); setSelectedId(''); setQuantity(1); }}
               />
@@ -477,7 +479,7 @@ const AddItemModal: React.FC<{
             <label className="inline-flex items-center">
               <input
                 type="radio"
-                className="form-radio text-primary-600"
+                className="form-radio text-blue-600"
                 checked={type === 'product'}
                 onChange={() => { setType('product'); setSelectedId(''); setQuantity(1); }}
               />
@@ -486,7 +488,7 @@ const AddItemModal: React.FC<{
           </div>
 
           <div>
-            <label htmlFor="modal-select-item" className="block text-sm font-medium text-slate-700 mb-1">Select {type === 'service' ? 'Service' : 'Product'}</label>
+            <label htmlFor="modal-select-item" className="block text-sm font-semibold text-slate-700 mb-1">Select {type === 'service' ? 'Service' : 'Product'}</label>
             <select
               id="modal-select-item"
               className="input"
@@ -505,7 +507,7 @@ const AddItemModal: React.FC<{
 
           {type === 'product' && (
             <div>
-              <label htmlFor="modal-quantity" className="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
+              <label htmlFor="modal-quantity" className="block text-sm font-semibold text-slate-700 mb-1">Quantity</label>
               <input
                 id="modal-quantity"
                 type="number"

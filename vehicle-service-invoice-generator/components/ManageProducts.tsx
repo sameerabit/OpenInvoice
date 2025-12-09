@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import type { ServiceOrProduct } from '../types';
 import { createProduct, deleteProduct } from '../api';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Card } from './ui/Card';
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from './ui/Table';
 
 interface ManageItemsProps {
   items: ServiceOrProduct[];
@@ -42,68 +46,72 @@ const ManageProducts: React.FC<ManageItemsProps> = ({ items, onRefresh }) => {
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-4">Manage Products</h1>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold mb-6 text-slate-900">Manage Products</h1>
       
-      <form onSubmit={handleSubmit} className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-        <div className="md:col-span-2">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Product Description</label>
-          <input
-            id="description"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g., Engine Oil (5L)"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
-          <input
-            id="price"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value === '' ? '' : parseFloat(e.target.value))}
-            placeholder="e.g., 45.00"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-            step="0.01"
-            min="0"
-          />
-        </div>
-        <div className="md:col-span-3 text-right">
-            <button type="submit" className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition-colors">
-                Add Product
-            </button>
-        </div>
-      </form>
+      <Card title="Add New Product">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div className="md:col-span-2">
+            <Input
+              label="Product Description"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="e.g., Engine Oil (5L)"
+              required
+            />
+          </div>
+          <div>
+            <Input
+              label="Price ($)"
+              id="price"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value === '' ? '' : parseFloat(e.target.value))}
+              placeholder="0.00"
+              required
+              step="0.01"
+              min="0"
+            />
+          </div>
+          <div className="md:col-span-3 text-right">
+            <Button type="submit">
+              Add Product
+            </Button>
+          </div>
+        </form>
+      </Card>
 
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-gray-700">Products</h2>
-        <div className="overflow-x-auto rounded-lg border">
-            <table className="min-w-full bg-white">
-                <thead className="bg-gray-100">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                    {items.map(item => (
-                        <tr key={item.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.description}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">${item.price.toFixed(2)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                <button onClick={() => handleRemove(item.id)} className="text-red-600 hover:text-red-800 transition-colors">Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+      <TableContainer>
+        <div className="px-6 py-4 border-b border-slate-100 bg-gray-50">
+          <h2 className="text-lg font-bold text-slate-900">Products</h2>
         </div>
-      </div>
+        <Table>
+          <Thead>
+            <Tr className="hover:bg-transparent">
+              <Th>Description</Th>
+              <Th className="text-right">Price</Th>
+              <Th className="text-center">Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map(item => (
+              <Tr key={item.id}>
+                <Td className="font-bold">{item.description}</Td>
+                <Td className="text-right font-medium text-slate-900">${item.price.toFixed(2)}</Td>
+                <Td className="text-center">
+                  <button onClick={() => handleRemove(item.id)} className="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wide">Delete</button>
+                </Td>
+              </Tr>
+            ))}
+            {items.length === 0 && (
+              <Tr className="hover:bg-transparent">
+                <Td colSpan={3} className="text-center py-12 text-slate-500">No products found.</Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
