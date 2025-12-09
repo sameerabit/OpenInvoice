@@ -23,7 +23,7 @@
         - generic [ref=e18]: Products
     - generic [ref=e19]:
       - button "Logout" [ref=e20] [cursor=pointer]
-      - paragraph [ref=e21]: © 2025 LARA Auto Services
+      - paragraph [ref=e21]: © 2025 Resiliz
   - main [ref=e22]:
     - generic [ref=e23]:
       - heading "New Sale" [level=1] [ref=e24]

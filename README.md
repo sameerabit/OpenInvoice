@@ -7,7 +7,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
-**Open Invoice** (formerly Lara Auto Service) is a modern, open-source vehicle service invoice generation and management system. It features a clean, professional React frontend and a robust PHP/Symfony backend.
+**Open Invoice** is a modern, open-source vehicle service invoice generation and management system. It features a clean, professional React frontend and a robust PHP/Symfony backend.
 
 ## ✨ Features
 
