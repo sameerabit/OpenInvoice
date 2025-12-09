@@ -1,0 +1,108 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]: LARA Auto
+    - navigation [ref=e6]:
+      - link "🛒 New Sale" [ref=e7] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e8]: 🛒
+        - generic [ref=e9]: New Sale
+      - link "👥 Customers" [ref=e10] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e11]: 👥
+        - generic [ref=e12]: Customers
+      - link "🔧 Services" [ref=e13] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e14]: 🔧
+        - generic [ref=e15]: Services
+      - link "📦 Products" [ref=e16] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e17]: 📦
+        - generic [ref=e18]: Products
+    - generic [ref=e19]:
+      - button "Logout" [ref=e20] [cursor=pointer]
+      - paragraph [ref=e21]: © 2025 Resiliz
+  - main [ref=e22]:
+    - generic [ref=e23]:
+      - heading "New Sale" [level=1] [ref=e24]
+      - paragraph [ref=e25]: Select an existing customer or enter details for a new one.
+      - generic [ref=e26]:
+        - generic [ref=e27]: Select Existing Customer
+        - combobox "Select Existing Customer" [ref=e28]:
+          - option "-- New Customer --"
+          - option "Test Customer - no vehicle"
+          - option "Test Customer 1763849944304 - REG-1763849944304"
+          - option "Viraj Amarasinghe - ABC-789"
+          - option "Test Customer 1763851174263 - REG-1763851174263"
+          - option "Test Customer 1763851263340 - REG-1763851263340"
+          - option "Test Customer 1763851325720 - REG-1763851325720"
+          - option "Test Customer 1763852121948 - REG-1763852121948"
+          - option "Test Customer 1763852448261 - REG-1763852448261"
+          - option "Test Customer 1763852529108 - REG-1763852529108"
+          - option "Test Customer 1763852699113 - REG-1763852699113"
+          - option "Test Customer 1763852884106 - REG-1763852884106"
+          - option "Test Customer 1763852999840 - REG-1763852999840" [selected]
+      - generic [ref=e29]:
+        - generic [ref=e30]: Select Vehicle
+        - combobox "Select Vehicle" [ref=e31]:
+          - option "-- Enter vehicle manually --"
+          - option "REG-1763852999840 — Test Vehicle" [selected]
+      - generic [ref=e32]:
+        - heading "Customer & Vehicle Details" [level=2] [ref=e33]
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - generic [ref=e36]: Customer Name *
+            - textbox "Customer Name *" [ref=e37]:
+              - /placeholder: e.g., John Smith
+              - text: Test Customer 1763852999840
+          - generic [ref=e38]:
+            - generic [ref=e39]: Vehicle Rego (Number Plate)
+            - textbox "Vehicle Rego (Number Plate)" [ref=e40]:
+              - /placeholder: e.g., ABC-123
+              - text: REG-1763852999840
+          - generic [ref=e41]:
+            - generic [ref=e42]: Address
+            - textbox "Address" [ref=e43]:
+              - /placeholder: 123 Main Street...
+              - text: 123 Test St
+          - generic [ref=e44]:
+            - generic [ref=e45]: Vehicle Odometer (km)
+            - textbox "Vehicle Odometer (km)" [ref=e46]:
+              - /placeholder: e.g., 150,000 km
+              - text: "10000"
+          - generic [ref=e47]:
+            - generic [ref=e48]: Vehicle Description
+            - textbox "Vehicle Description" [ref=e49]:
+              - /placeholder: e.g., 2020 Honda Civic
+              - text: Test Vehicle
+        - generic [ref=e50]:
+          - heading "Invoice Items" [level=2] [ref=e51]
+          - table [ref=e52]:
+            - rowgroup [ref=e53]:
+              - row "DESCRIPTION QTY PRICE ($) SUBTOTAL" [ref=e54]:
+                - cell "DESCRIPTION" [ref=e55]
+                - cell "QTY" [ref=e56]
+                - cell "PRICE ($)" [ref=e57]
+                - cell "SUBTOTAL" [ref=e58]
+                - cell [ref=e59]
+            - rowgroup [ref=e60]:
+              - row "Test Service 1763853000099 1 100 100.00 Remove item" [ref=e61]:
+                - cell "Test Service 1763853000099" [ref=e62]:
+                  - textbox [ref=e63]: Test Service 1763853000099
+                - cell "1" [ref=e64]:
+                  - spinbutton "Quantity" [ref=e65]: "1"
+                - cell "100" [ref=e66]:
+                  - spinbutton "Price" [ref=e67]: "100"
+                - cell "100.00" [ref=e68]
+                - cell "Remove item" [ref=e69]:
+                  - button "Remove item" [ref=e70] [cursor=pointer]: ✕
+          - generic [ref=e71]:
+            - button "+ Add Item from List" [ref=e72] [cursor=pointer]
+            - button "+ Add Custom Line" [ref=e73] [cursor=pointer]
+          - generic [ref=e76]:
+            - generic [ref=e77]: GRAND TOTAL
+            - generic [ref=e78]: $ 100.00
+        - button "Create Invoice" [ref=e80] [cursor=pointer]
+```

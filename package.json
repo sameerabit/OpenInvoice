@@ -1,7 +1,13 @@
 {
-  "name": "vehicle-service-invoice-generator",
-  "private": true,
-  "version": "0.0.0",
+  "name": "open-invoice",
+  "private": false,
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Open Source Vehicle Service Invoice Management System",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/virajamarasinghe/Invoice"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
