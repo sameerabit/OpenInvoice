@@ -1,20 +1,50 @@
+# Open Invoice
+
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+  <!-- You can replace this with the new OI logo artifact or a generated image later -->
+  <font size="6">Open Invoice Management System</font>
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
-# Run and deploy your AI Studio app
+**Open Invoice** is a modern, open-source vehicle service invoice generation and management system. It features a clean, professional React frontend and a robust PHP/Symfony backend.
 
-This contains everything you need to run your app locally.
+## ✨ Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/1R4ZKgjU1QskoQodYQjF79cexzNy7MeHc
+- **Dashboard:** At-a-glance metrics for sales, quotes, and activity.
+- **Invoice & Quote Generation:** Create professional PDF invoices and quotes.
+- **Customer Management:** Store customer details and vehicle history.
+- **Product & Service Management:** Manage inventory and service catalog.
+- **Light Theme:** Clean, corporate interface for maximum readability.
+- **Dockerized:** Easy deployment with Docker Compose.
 
-## Run Locally
+## 🚀 Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:**
+- Docker & Docker Compose
+- Node.js (for local frontend dev)
 
+### Quick Start (Docker)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Clone the repository.
+2. Build and start the containers:
+   ```bash
+   docker compose up --build -d
+   ```
+3. Access the application at `http://localhost:5173` (or configured port).
+
+### Local Development
+
+1. **Frontend:**
+   ```bash
+   cd vehicle-service-invoice-generator
+   npm install
+   npm run dev
+   ```
+
+2. **Backend:**
+   (See backend README for specific PHP setup instructions if running outside Docker)
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

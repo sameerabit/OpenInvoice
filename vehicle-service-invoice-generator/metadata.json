@@ -1,0 +1,5 @@
+{
+  "name": "Vehicle Service Invoice Generator",
+  "description": "An application to create, manage, and print professional invoices for a vehicle service center, based on a provided template.",
+  "requestFramePermissions": []
+}
